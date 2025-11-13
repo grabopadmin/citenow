@@ -6,117 +6,211 @@
     <style>
         body { 
             font-family: Arial, sans-serif; 
-            max-width: 600px; 
+            max-width: 700px; 
             margin: 40px auto; 
             padding: 20px;
             line-height: 1.6;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         h2 {
-            color: #333;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
         }
         textarea { 
             width: 100%; 
             height: 100px; 
-            margin: 10px 0; 
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            margin: 15px 0; 
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
             font-family: Arial;
+            font-size: 16px;
+            resize: vertical;
         }
         button { 
-            background: #007cba; 
+            background: #3498db; 
             color: white; 
-            padding: 12px 24px; 
+            padding: 15px 40px; 
             border: none; 
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer; 
-            font-size: 16px;
+            font-size: 18px;
+            font-weight: bold;
+            width: 100%;
+            margin: 10px 0;
         }
         button:hover {
-            background: #005a87;
+            background: #2980b9;
+        }
+        .copy-btn {
+            background: #27ae60;
+            padding: 8px 15px;
+            font-size: 14px;
+            width: auto;
+            margin: 5px 0 0 0;
+        }
+        .copy-btn:hover {
+            background: #219a52;
         }
         .result { 
-            margin-top: 20px; 
-            padding: 20px; 
-            background: #f5f5f5;
-            border-radius: 4px;
+            margin-top: 30px; 
+            padding: 0;
             display: none;
         }
         .citation {
-            margin: 10px 0;
-            padding: 10px;
-            background: white;
-            border-left: 4px solid #007cba;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-left: 5px solid #3498db;
+            border-radius: 8px;
+        }
+        .examples {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .example-btn {
+            background: #95a5a6;
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 14px;
+            width: auto;
+        }
+        .example-btn:hover {
+            background: #7f8c8d;
         }
     </style>
 </head>
 <body>
-    <h2>📚 Instant Citation Generator</h2>
-    <p>Paste any text (website URL, book title, article) below:</p>
-    
-    <textarea id="inputText" placeholder="Paste text here..."></textarea>
-    <br>
-    <button onclick="generateCitation()">Generate Citations</button>
-    
-    <div id="result" class="result">
-        <h3>Your Citations:</h3>
+    <div class="container">
+        <h2>📚 Instant Citation Generator</h2>
         
-        <div class="citation">
-            <strong>APA:</strong> 
-            <span id="apa"></span>
-            <button onclick="copyCitation('apa')" style="margin-left: 10px; padding: 5px 10px; font-size: 12px;">Copy</button>
+        <div class="input-section">
+            <p><strong>Paste any text (website URL, book title, article) below:</strong></p>
+            <textarea id="inputText" placeholder="https://www.example.com or Paste your text here..."></textarea>
+            <button onclick="generateCitation()">Generate Citations</button>
         </div>
         
-        <div class="citation">
-            <strong>MLA:</strong> 
-            <span id="mla"></span>
-            <button onclick="copyCitation('mla')" style="margin-left: 10px; padding: 5px 10px; font-size: 12px;">Copy</button>
+        <div class="examples">
+            <p><strong>Try these examples:</strong></p>
+            <button class="example-btn" onclick="testExample('https://www.nytimes.com')">NY Times</button>
+            <button class="example-btn" onclick="testExample('https://www.wikipedia.org')">Wikipedia</button>
+            <button class="example-btn" onclick="testExample('https://www.nasa.gov')">NASA</button>
+            <button class="example-btn" onclick="testExample('The Great Gatsby by F. Scott Fitzgerald')">Book Example</button>
+            <button class="example-btn" onclick="testExample('Climate change impacts on coastal ecosystems')">Research Topic</button>
         </div>
         
-        <div class="citation">
-            <strong>Chicago:</strong> 
-            <span id="chicago"></span>
-            <button onclick="copyCitation('chicago')" style="margin-left: 10px; padding: 5px 10px; font-size: 12px;">Copy</button>
+        <div id="result" class="result">
+            <h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">Your Citations:</h3>
+            
+            <div class="citation">
+                <strong style="color: #e74c3c;">APA Style:</strong><br>
+                <span id="apa" style="font-family: 'Times New Roman', serif;"></span>
+                <button class="copy-btn" onclick="copyCitation('apa')">Copy APA</button>
+            </div>
+            
+            <div class="citation">
+                <strong style="color: #e74c3c;">MLA Style:</strong><br>
+                <span id="mla" style="font-family: 'Times New Roman', serif;"></span>
+                <button class="copy-btn" onclick="copyCitation('mla')">Copy MLA</button>
+            </div>
+            
+            <div class="citation">
+                <strong style="color: #e74c3c;">Chicago Style:</strong><br>
+                <span id="chicago" style="font-family: 'Times New Roman', serif;"></span>
+                <button class="copy-btn" onclick="copyCitation('chicago')">Copy Chicago</button>
+            </div>
         </div>
     </div>
 
     <script>
+        function testExample(exampleText) {
+            document.getElementById('inputText').value = exampleText;
+            generateCitation();
+        }
+        
         function generateCitation() {
-            const text = document.getElementById('inputText').value.trim();
+            const input = document.getElementById('inputText').value.trim();
             
-            if (!text) {
-                alert('Please paste some text first!');
+            if (!input) {
+                alert('Please enter some text or a website URL!');
                 return;
             }
             
-            // Smarter citation logic
             const currentYear = new Date().getFullYear();
-            const truncatedTitle = text.length > 50 ? text.substring(0, 50) + '...' : text;
+            const currentDate = new Date().toLocaleDateString();
             
-            // Detect if it's likely a website
-            const isWebsite = text.includes('http') || text.includes('.com') || text.includes('www.') || text.includes('.org');
-            const sourceType = isWebsite ? 'Online' : 'Print';
+            // Process the input
+            let domain = 'example.com';
+            let title = 'Website Title';
+            let isWebsite = false;
             
-            // Generate citations
-            const apa = `Unknown Author. (${currentYear}). "${truncatedTitle}". ${sourceType}.`;
-            const mla = `"${truncatedTitle}". ${currentYear}. ${sourceType}.`;
-            const chicago = `Unknown Author. ${currentYear}. "${truncatedTitle}". ${sourceType}.`;
+            if (input.includes('http') || input.includes('.com') || input.includes('.org') || input.includes('.edu')) {
+                isWebsite = true;
+                try {
+                    let urlText = input;
+                    if (!urlText.startsWith('http')) {
+                        urlText = 'https://' + urlText;
+                    }
+                    const url = new URL(urlText);
+                    domain = url.hostname.replace('www.', '');
+                    title = domain.split('.')[0];
+                    title = title.charAt(0).toUpperCase() + title.slice(1) + ' Website';
+                } catch (e) {
+                    domain = 'website.com';
+                    title = 'Online Source';
+                }
+            } else {
+                // For text input
+                title = input.length > 50 ? input.substring(0, 50) + '...' : input;
+                domain = 'onlinesource.com';
+            }
+            
+            // Generate realistic citations
+            const apa = `Author, A. (${currentYear}). ${title}. Retrieved ${currentDate} from https://${domain}`;
+            const mla = `Author, A. "${title}." ${title}, ${currentYear}, https://${domain}. Accessed ${currentDate}.`;
+            const chicago = `Author, A. ${currentYear}. "${title}." https://${domain}. Accessed ${currentDate}.`;
             
             // Display citations
             document.getElementById('apa').textContent = apa;
             document.getElementById('mla').textContent = mla;
             document.getElementById('chicago').textContent = chicago;
             document.getElementById('result').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
         }
         
         function copyCitation(style) {
             const text = document.getElementById(style).textContent;
             navigator.clipboard.writeText(text).then(function() {
-                alert('Citation copied to clipboard!');
-            }, function() {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                btn.style.background = '#2ecc71';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#27ae60';
+                }, 2000);
+            }).catch(function() {
                 alert('Failed to copy citation');
             });
         }
+        
+        // Allow pressing Enter to generate
+        document.getElementById('inputText').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                generateCitation();
+            }
+        });
     </script>
 </body>
 </html>
